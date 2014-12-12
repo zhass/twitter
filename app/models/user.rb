@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   validates :password, presence: true, length: {minimum: 6}
   
   has_secure_password
+  has_many :microposts, dependent: :destroy
   
   before_save { self.email = self.email.downcase }
   before_create :create_remember_token
@@ -16,6 +17,10 @@ class User < ActiveRecord::Base
 
   def User.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
+  end
+  
+  def feed
+    microposts
   end
 
   private
